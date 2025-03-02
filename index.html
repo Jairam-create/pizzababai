@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIZZA BABAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background: linear-gradient(to right, #ff9966, #ff5e62);
+        }
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(to bottom, #333, #444);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 20px;
+            overflow-y: auto;
+        }
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            transition: background 0.3s;
+        }
+        .sidebar a:hover {
+            background: linear-gradient(to right, #ff6347, #ff4500);
+            border-radius: 5px;
+        }
+        .submenu {
+            display: none;
+            padding-left: 20px;
+        }
+        .toggle-menu {
+            cursor: pointer;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+            text-align: center;
+            background: linear-gradient(to bottom, #ffecd2, #fcb69f);
+        }
+        header {
+            background: linear-gradient(to right, #ff4500, #ff6347);
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .cart {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a class="toggle-menu" onclick="toggleSubMenu('restaurants', restaurantItems)">Restaurants ⮟</a>
+        <div class="submenu" id="restaurants"></div>
+        <a class="toggle-menu" onclick="toggleSubMenu('foodCategories', foodCategories)">Food Categories ⮟</a>
+        <div class="submenu" id="foodCategories"></div>
+        <a class="toggle-menu" onclick="toggleSubMenu('locations', locations)">Locations ⮟</a>
+        <div class="submenu" id="locations"></div>
+    </div>
+    <div class="content">
+        <header>
+            <h1>PIZZA BABAI</h1>
+        </header>
+        <div class="cart">
+            <h2>Cart</h2>
+            <ul id="cart-items"></ul>
+            <h3>Total: ₹<span id="cart-total">0</span></h3>
+            <button onclick="placeOrder()">Order Now</button>
+        </div>
+        <div class="featured-items" id="content-display"></div>
+    </div>
+    <script>
+        let cart = [];
+        const restaurantItems = {
+            "Bawarchi": ["Chicken Dum Biryani - ₹400", "Mutton Dum Biryani - ₹550"],
+            "Paradise": ["Hyderabadi Special Biryani - ₹450", "Paradise Prawns Biryani - ₹600"],
+            "Dominos": ["Cheese Lava Pizza - ₹350", "Paneer Pizza - ₹300"],
+            "Pizza Hut": ["Veg Heaven Pizza - ₹320", "Mushroom Pizza - ₹280"],
+            "KFC": ["Chicken Wings - ₹250", "Chicken Lollipops - ₹300"],
+            "Parivaar": ["Kurbani Ka Meeta - ₹200", "Double Ka Meeta - ₹180"],
+            "Street Pizza": ["Chicken Roast Pizza - ₹340", "Veggie Pizza - ₹290"],
+            "Burger King": ["Onion Rings - ₹150", "Desi Burger - ₹200"],
+            "Ram Ki Bandi": ["Pani Puri - ₹80", "Bhel Puri - ₹100"],
+            "Upahaar": ["Samosa - ₹50", "Veg Puff - ₹60"]
+        };
+        const foodCategories = {
+            "Veg": ["Paneer Tikka - ₹200", "Veg Biryani - ₹250", "Aloo Paratha - ₹150"],
+            "Non-Veg": ["Chicken Curry - ₹300", "Mutton Biryani - ₹350", "Fish Fry - ₹280"],
+            "Dessert": ["Gulab Jamun - ₹100", "Chocolate Cake - ₹200", "Rasmalai - ₹150"],
+            "Biryani": ["Hyderabadi Biryani - ₹250", "Lucknowi Biryani - ₹280", "Kolkata Biryani - ₹260"],
+            "Starters": ["Spring Rolls - ₹180", "Chicken Tikka - ₹220", "Crispy Corn - ₹160"],
+            "Snacks": ["French Fries - ₹100", "Samosa - ₹80", "Pav Bhaji - ₹150"],
+            "Ice Creams": ["Vanilla Ice Cream - ₹120", "Chocolate Sundae - ₹150", "Strawberry Delight - ₹130"]
+        };
+        const locations = {"Hyderabad": [], "Mumbai": [], "Delhi": [], "Bangalore": [], "Chennai": []};
+        function addToCart(item, price) {
+            cart.push({ item, price });
+            updateCart();
+        }
+        function updateCart() {
+            const cartList = document.getElementById("cart-items");
+            const cartTotal = document.getElementById("cart-total");
+            cartList.innerHTML = cart.map(i => `<li>${i.item} - ₹${i.price}</li>`).join(" ");
+            cartTotal.innerText = cart.reduce((total, i) => total + i.price, 0);
+        }
+        function placeOrder() {
+            alert("Item Ordered! Total Bill: ₹" + cart.reduce((total, i) => total + i.price, 0));
+            cart = [];
+            updateCart();
+        }
+        function toggleSubMenu(id, items) {
+            const submenu = document.getElementById(id);
+            submenu.innerHTML = Object.keys(items).map(item => `<a onclick="showItems('${item}')">${item}</a>`).join(" ");
+            submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+        }
+        function showItems(category) {
+            const contentDisplay = document.getElementById("content-display");
+            contentDisplay.innerHTML = (foodCategories[category] || restaurantItems[category] || locations[category] || []).map(item => {
+                const [name, price] = item.split(" - ₹");
+                return `<div class='food-item'>
+                            <h3>${name}</h3>
+                            <p>Price: ₹${price}</p>
+                            <button onclick='addToCart("${name}", ${price})'>Add to Cart</button>
+                        </div>`;
+            }).join(" ");
+        }
+    </script>
+</body>
+</html>
